@@ -1,20 +1,24 @@
-from project.main.config.db_config import DBContext
+from project.main.config.config import DBContext
 from project.main.enums.db_enum import DBEnum
 from project.main.enums.collection_enum import CollectionEnum
 from project.main.dtos.dataset_dto import DataSetDTO
 from bson.objectid import ObjectId
 
+from project.main.services import record_service as rs
+
 DB_CONTEXT = DBContext()
 collection = DB_CONTEXT.get_collection(DBEnum.SI_DB, CollectionEnum.DATASET)
 
 
-def insert(dataset: DataSetDTO) -> dict:
-    try:
-        collection.insert_one(dataset.serialize(False))
-        DB_CONTEXT.close()
-        return {"EXITO": "Se ha insertado el dataset correctamente!!!"}
-    except Exception as e:
-        return {"ERROR": e}
+def insert(dataset: DataSetDTO):
+    if dataset.record_id is not None:
+        record = rs.find(dataset.record_id)
+        if record is None:
+            raise Exception("No existe registro asociado para el dataset")
+        ident = collection.insert_one(dataset.serialize(False)).inserted_id
+        return str(ident)
+    else:
+        raise Exception("El identificador del registro no se ingresó correctamente")
 
 
 def index():
@@ -24,29 +28,19 @@ def index():
             DataSetDTO(dataset['name'], dataset['records'], dataset['model_name'],
                        dataset['accuracy'],
                        dataset['is_preprocessed'], str(dataset['_id'])).serialize(True))
-    DB_CONTEXT.close()
     return dataset_list
 
 
 def find(ident: str):
     document_id = ObjectId(ident)  # ID del documento a consultar
-    try:
-        found_dataset = collection.find_one({'_id': document_id})
+    found_dataset = collection.find_one({'_id': document_id})
+    if found_dataset is not None:
         return DataSetDTO(found_dataset['name'], found_dataset['records'], found_dataset['model_name'],
                           found_dataset['accuracy'],
                           found_dataset['is_preprocessed'], str(found_dataset['_id'])).serialize(True)
-    except Exception:
-        return None
-    finally:
-        DB_CONTEXT.close()
+    raise Exception('No se encontró el dataset')
 
 
-def remove(ident: str) -> dict:
+def remove(ident: str):
     document_id = ObjectId(ident)  # ID del documento a consultar
-    try:
-        collection.find_one_and_delete({'_id': document_id})
-        return {"EXITO": f"el dataset con el id: {ident} se ha eliminado correctamente!!!"}
-    except Exception as e:
-        return {"ERROR": e}
-    finally:
-        DB_CONTEXT.close()
+    return collection.find_one_and_delete({'_id': document_id}) is not None
