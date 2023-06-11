@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import MinMaxScaler
 
 
-def knn_training(dataset):
+def knn_training(dataset, neighborns):
     # Dividir el dataset en características (X) y etiquetas (y)
     X = dataset.data
     print(X.shape)
@@ -33,7 +33,7 @@ def knn_training(dataset):
     XTrain, XTest, yTrain, yTest = train_test_split(X, y, test_size=0.3, random_state=6)
 
     # Crear el clasificador KNN
-    knn = KNeighborsClassifier(n_neighbors=3)  # Puedes ajustar el valor de "n_neighbors" según tus necesidades
+    knn = KNeighborsClassifier(n_neighbors=neighborns)  # Puedes ajustar el valor de "n_neighbors" según tus necesidades
 
     # Entrenar el clasificador KNN
     knn.fit(XTrain, yTrain)
@@ -109,6 +109,6 @@ linear_regression_training(data, 5, 2)
 
 dataset = datasets.load_breast_cancer()
 print(dataset.DESCR)
-knn_training(dataset)
+knn_training(dataset, 3)
 
 linear_logisticRegression_training(dataset)
