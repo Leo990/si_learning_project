@@ -28,8 +28,8 @@ def index():
     return dataset_list
 
 
-def find(id: str):
-    document_id = ObjectId(id)  # ID del documento a consultar
+def find(ident: str):
+    document_id = ObjectId(ident)  # ID del documento a consultar
     try:
         found_dataset = collection.find_one({'_id': document_id})
         return DataSetDTO(found_dataset['name'], found_dataset['records'], found_dataset['model_name'],
@@ -41,11 +41,11 @@ def find(id: str):
         DB_CONTEXT.close()
 
 
-def remove(id: str) -> dict:
-    document_id = ObjectId(id)  # ID del documento a consultar
+def remove(ident: str) -> dict:
+    document_id = ObjectId(ident)  # ID del documento a consultar
     try:
         collection.find_one_and_delete({'_id': document_id})
-        return {"EXITO": f"el dataset con el id: {id} se ha eliminado correctamente!!!"}
+        return {"EXITO": f"el dataset con el id: {ident} se ha eliminado correctamente!!!"}
     except Exception as e:
         return {"ERROR": e}
     finally:

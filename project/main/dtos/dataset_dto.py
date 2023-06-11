@@ -1,5 +1,5 @@
 class DataSetDTO:
-    def __init__(self, name, records, model_name, accuracy=0.0, is_preprocessed=False, ident=None):
+    def __init__(self, name, records, model_name=None, accuracy=0.0, is_preprocessed=False, ident=None):
         self.id = ident
         self.name = name
         self.records = records

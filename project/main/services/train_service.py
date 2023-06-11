@@ -41,4 +41,4 @@ def train(param_train: ParamTrainDTO):
         dataset_dto.accuracy = accuracy_score(y_test, y_predict)
         return {"EXITO": "El dataset ingresado fue entrenado correctamente!!!"}
     else:
-        return {"ERROR" : "El dataset ingresado no se encuentra preprocesado para hacer el entrenamiento"}
+        return {"ERROR": "El dataset ingresado no se encuentra preprocesado para hacer el entrenamiento"}

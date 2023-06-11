@@ -5,4 +5,3 @@ class ParamTrainDTO:
         self.test_size = test_size
         self.scaler_enum = scaler_enum
         self.model_enum = model_enum
-
