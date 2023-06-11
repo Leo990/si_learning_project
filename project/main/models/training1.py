@@ -1,5 +1,8 @@
+from sklearn import datasets
 #Calculos matemáticos y matrices
 import numpy as np
+#graficas
+import pandas as pd
 #Importacion de módulo para dividir el dataset
 from sklearn.model_selection import train_test_split
 #Importación knn
@@ -18,9 +21,14 @@ from sklearn.preprocessing import MinMaxScaler
 
 def knn_training(dataset):
     # Dividir el dataset en características (X) y etiquetas (y)
-    X = dataset.iloc[:, :-1]  # Todas las columnas excepto la última
-    y = dataset.iloc[:, -1]   # Última columna, que contiene las etiquetas
-
+    X = dataset.data
+    print(X.shape)
+    print(X)
+    print("------------")
+    y = dataset.target
+    print(y.shape)
+    print(dataset.target_names)
+    print(y)
     # Dividir los datos en conjunto de entrenamiento y conjunto de prueba
     XTrain, XTest, yTrain, yTest = train_test_split(X, y, test_size=0.3, random_state=6)
 
@@ -91,4 +99,16 @@ def linear_logisticRegression_training(dataset):
     print(yTest)
 
 
+data_url = "http://lib.stat.cmu.edu/datasets/boston"
+raw_df = pd.read_csv(data_url, sep="\s+", skiprows=22, header=None)
+data = np.hstack([raw_df.values[::2, :], raw_df.values[1::2, :2]])
 
+#knn_training(data)
+
+linear_regression_training(data, 5, 2)
+
+dataset = datasets.load_breast_cancer()
+print(dataset.DESCR)
+knn_training(dataset)
+
+linear_logisticRegression_training(dataset)
