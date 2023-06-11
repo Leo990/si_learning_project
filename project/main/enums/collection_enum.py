@@ -1,0 +1,2 @@
+class CollectionEnum:
+    DATASET = "dataset"
