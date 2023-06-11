@@ -6,7 +6,7 @@ class DBContext:
 
     def __init__(self):
         uri = "mongodb+srv://new_user_21:uCeRoi2boMgcbT2s@silearning.zxce2md.mongodb.net/?retryWrites=true&w=majority"
-        self.client = MongoClient(uri)
+        self.client = MongoClient(uri) if self.client is None else self.client
 
     def get_db(self, db_enum):
         return self.client[db_enum]

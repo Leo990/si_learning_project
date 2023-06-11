@@ -11,6 +11,7 @@ collection = DB_CONTEXT.get_collection(DBEnum.SI_DB, CollectionEnum.DATASET)
 def insert(dataset: DataSetDTO) -> dict:
     try:
         collection.insert_one(dataset.serialize(False))
+        DB_CONTEXT.close()
         return {"EXITO": "Se ha insertado el dataset correctamente!!!"}
     except Exception as e:
         return {"ERROR": e}
@@ -23,6 +24,7 @@ def index():
             DataSetDTO(dataset['name'], dataset['records'], dataset['model_name'],
                        dataset['accuracy'],
                        dataset['is_preprocessed'], str(dataset['_id'])).serialize(True))
+    DB_CONTEXT.close()
     return dataset_list
 
 
@@ -35,6 +37,8 @@ def find(id: str):
                           found_dataset['is_preprocessed'], str(found_dataset['_id'])).serialize(True)
     except Exception:
         return None
+    finally:
+        DB_CONTEXT.close()
 
 
 def remove(id: str) -> dict:
@@ -44,3 +48,5 @@ def remove(id: str) -> dict:
         return {"EXITO": f"el dataset con el id: {id} se ha eliminado correctamente!!!"}
     except Exception as e:
         return {"ERROR": e}
+    finally:
+        DB_CONTEXT.close()
