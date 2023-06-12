@@ -1,0 +1,3 @@
+class ScalerEnum:
+     MIN_MAX_SCALER = "MIN_MAX_SCALER"
+     STANDARD_SCALER = "STANDARD_SCALER"
