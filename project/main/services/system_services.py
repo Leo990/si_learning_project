@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import pandas as pd
@@ -15,10 +16,10 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import accuracy_score
 
 from project.main.config.config import config
-from project.main.enums.dataset_enums import ModelEnum, EvaluatorEnum, ScalerEnum
+from project.main.enums.dataset_enums import ModelEnum, EvaluatorEnum, ScalerEnum, PreprocessEnum
 from project.main.enums.extension_enum import ExtensionEnum
 
-from project.main.dtos.service_dtos import ParamTrainDTO, DataSetDTO, RecordDTO
+from project.main.dtos.service_dtos import ParamTrainDTO, DataSetDTO, RecordDTO, ParamPreprocessDTO
 from project.main.services import dataset_service as ds
 from project.main.services import record_service as rs
 from project.main.services import dropbox_service as ddr
@@ -55,7 +56,7 @@ def manage_dataset(param_train: ParamTrainDTO):
 
         # Almacena el modelo en mongo y en el dropbox
         _build_dataset(dataset_dto, model, param_train, acuraccy)
-        ds.update(dataset_dto.ident, dataset_dto)
+        ds.update(dataset_dto)
         return {"EXITO": "El dataset ingresado fue entrenado correctamente!!!"}
     elif dataset_dto is None:
         return {"ERROR": "El dataset no se encuentra en la base de datos."}
@@ -122,3 +123,66 @@ def _build_dataset(dataset_dto, model, param_train, accuracy):
         os.remove(temp_path)
     dataset_dto.model_name = param_train.model_enum
     dataset_dto.accuracy = accuracy
+
+
+def preprocess_dataset(param_pre_process_dto: ParamPreprocessDTO):
+    dataset_dto: DataSetDTO = ds.find(param_pre_process_dto.ident)
+    record_dto: RecordDTO = rs.find(dataset_dto.record_id)
+    if dataset_dto is not None and record_dto is not None and record_dto.is_preprocessed is False:
+        dataframe = pd.DataFrame.from_records(data=json.loads(record_dto.my_data))
+
+        if param_pre_process_dto.preprocess_enum == PreprocessEnum.MEAN:
+            preprocess_dataframe = _impute_mean(dataframe)
+            pass
+        elif param_pre_process_dto.preprocess_enum == PreprocessEnum.MEDIAN:
+            preprocess_dataframe = _impute_median(dataframe)
+            pass
+        elif param_pre_process_dto.preprocess_enum == PreprocessEnum.HOT_DECK:
+            preprocess_dataframe = _impute_hot_deck(dataframe)
+            pass
+        else:
+            raise Exception('')
+        _build_preprocessed_dataset(preprocess_dataframe, dataset_dto, record_dto)
+        return
+    else:
+        raise Exception('')
+
+
+def _impute_mean(dataset: pd.DataFrame):
+    # Calcular la media de cada columna
+    column_means = dataset.mean()
+
+    # Imputar los valores faltantes con la media de cada columna
+    return dataset.fillna(column_means)
+
+
+def _impute_median(dataset: pd.DataFrame):
+    # Calcular la mediana de cada columna
+    column_means = dataset.median()
+
+    # Imputar los valores faltantes con la media de cada columna
+    return dataset.fillna(column_means)
+
+
+def _impute_hot_deck(dataset):
+    df_imputed = dataset.copy()
+    # Iterar sobre las columnas
+    for col in df_imputed.columns:
+        # Obtener los índices de los valores faltantes en la columna
+        missing_indices = df_imputed[col].isnull()
+        # Obtener los valores no nulos en la misma columna
+        non_missing_values = df_imputed.loc[~missing_indices, col]
+        # Imputar los valores faltantes con valores no nulos al azar
+        df_imputed.loc[missing_indices, col] = non_missing_values.sample(n=missing_indices.sum(), replace=True).values
+    return df_imputed
+
+
+def _build_preprocessed_dataset(preprocess_dataframe, dataset_dto, record_dto):
+    record_dto.my_data = preprocess_dataframe.to_json(orient='records')
+    record_dto.is_preprocessed = True
+    rs.update(record_dto)
+    csv_data = preprocess_dataframe.to_csv(index=False)
+
+    # Cargar el archivo a Dropbox
+    with io.BytesIO(csv_data.encode()) as stream:
+        ddr.load_file(stream.read(), f"/{dataset_dto.name}/{dataset_dto.name}_preprocess{ExtensionEnum.CSV}")

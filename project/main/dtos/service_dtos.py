@@ -26,6 +26,12 @@ class ParamTrainDTO:
         self.evaluator_enum = None
 
 
+class ParamPreprocessDTO:
+    def __init__(self, ident: str, preprocess_enum: str):
+        self.ident = ident
+        self.preprocess_enum = preprocess_enum
+
+
 class DataSetDTO:
     def __init__(self, name, record_id, model_name=None, accuracy=0.0, ident=None):
         self.ident = ident

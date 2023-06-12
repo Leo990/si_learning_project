@@ -41,8 +41,8 @@ def find(ident: str):
     raise Exception('No se encontró el dataset')
 
 
-def update(ident: str, dataset_dto: DataSetDTO):
-    document_id = ObjectId(ident)  # ID del documento a consultar
+def update(dataset_dto: DataSetDTO):
+    document_id = ObjectId(dataset_dto.ident)  # ID del documento a consultar
     collection.update_one(
         {
             '_id': document_id
@@ -55,6 +55,7 @@ def update(ident: str, dataset_dto: DataSetDTO):
                 'accuracy': dataset_dto.accuracy}
         }
     )
+    return dataset_dto.serialize(True)
 
 
 def remove(ident: str):

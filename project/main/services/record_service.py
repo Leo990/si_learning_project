@@ -31,3 +31,19 @@ def find(ident: str):
 def remove(ident: str):
     document_id = ObjectId(ident)  # ID del documento a consultar
     return collection.find_one_and_delete({'_id': document_id}) is not None
+
+
+def update(record_dto: RecordDTO):
+    document_id = ObjectId(record_dto.ident)  # ID del documento a consultar
+    collection.update_one(
+        {
+            '_id': document_id
+        },
+        {
+            '$set': {
+                'my_data': record_dto.my_data,
+                'is_preprocessed': record_dto.is_preprocessed
+            }
+        }
+    )
+    return record_dto.serialize(True)
