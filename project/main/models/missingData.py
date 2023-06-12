@@ -2,14 +2,15 @@ import numpy as np
 from sklearn import datasets
 from sklearn.impute import SimpleImputer
 
+
 def impute_mean(dataset):
-    X = dataset.data
+    x = dataset.data
     y = dataset.target
     # Crear un imputador para la estrategia de media
     imputer_mean = SimpleImputer(strategy='mean')
-    X_imputed_mean = imputer_mean.fit_transform(X)
+    x_imputed_mean = imputer_mean.fit_transform(x)
 
-    return X_imputed_mean, y
+    return x_imputed_mean, y
 
 
 def impute_median(dataset):
@@ -26,15 +27,15 @@ def impute_median(dataset):
 # Aquí asumiremos que los datos faltantes están representados como NaN en el dataset original
 # y los reemplazaremos por los valores correspondientes en las mismas características de otras instancias
 def impute_hot_deck(dataset):
-    X = dataset.data
+    x = dataset.data
     y = dataset.target
 
     # Encuentra las posiciones de los valores faltantes
-    missing_values = np.isnan(X)
+    missing_values = np.isnan(x)
 
     # Itera sobre cada columna
-    for col_idx in range(X.shape[1]):
-        col = X[:, col_idx]
+    for col_idx in range(x.shape[1]):
+        col = x[:, col_idx]
 
         # Encuentra las posiciones de los valores faltantes en la columna actual
         col_missing_values = missing_values[:, col_idx]
@@ -49,11 +50,10 @@ def impute_hot_deck(dataset):
                     # Si los valores previo y siguiente también son faltantes,
                     # se mantiene el valor faltante
                     continue
-
                 # Reemplaza el valor faltante con el valor más cercano
                 col[idx] = prev_val if abs(val - prev_val) <= abs(val - next_val) else next_val
 
-    return X, y
+    return x, y
 
 
 # Carga el dataset de cáncer de mama
@@ -67,4 +67,3 @@ X_median, y_median = impute_median(dataset)
 
 # Imputación por hot deck
 X_hot_deck, y_hot_deck = impute_hot_deck(dataset)
-

@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 from project.main.services import system_services as ss
-from project.main.dtos.param_train_dto import ParamTrainDTO
+from project.main.dtos.service_dtos import ParamTrainDTO
 
 system_bp = Blueprint('system', __name__)
 
@@ -14,7 +14,7 @@ def upload():
         return jsonify({'error': 'No se recibió ningún archivo.'}), 400
 
 
-@system_bp.route('/train', methods=['POST'])
-def train_dataset():
+@system_bp.route('/manage_dataset', methods=['POST'])
+def manage_dataset():
     param_train_dto: ParamTrainDTO = request.json
-    return ss.train(param_train_dto), 200
+    return ss.manage_dataset(param_train_dto), 200

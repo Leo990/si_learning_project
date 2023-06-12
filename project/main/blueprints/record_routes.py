@@ -1,6 +1,6 @@
 from flask import jsonify, Blueprint,request
 from project.main.services import record_service as rs
-from project.main.dtos.record_dto import RecordDTO
+from project.main.dtos.service_dtos import RecordDTO
 
 record_bp = Blueprint('record', __name__)
 

@@ -1,7 +1,6 @@
 from project.main.config.config import DBContext
-from project.main.enums.db_enum import DBEnum
-from project.main.enums.collection_enum import CollectionEnum
-from project.main.dtos.record_dto import RecordDTO
+from project.main.enums.db_enum import DBEnum, CollectionEnum
+from project.main.dtos.service_dtos import RecordDTO
 from bson.objectid import ObjectId
 
 DB_CONTEXT = DBContext()
