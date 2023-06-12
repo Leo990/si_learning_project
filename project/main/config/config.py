@@ -19,9 +19,6 @@ class DBContext:
         db = self.get_db(db_enum)
         return db[collection_enum]
 
-    def close(self):
-        pass
-        #self.client.close()
 
 class DropBoxContext:
     def __init__(self):

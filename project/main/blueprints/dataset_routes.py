@@ -24,3 +24,9 @@ def find_dataset(ident):
 @dataset_bp.route('/datasets/remove/<ident>', methods=['POST'])
 def remove_dataset(ident):
     return ds.remove(ident), 200
+
+
+@dataset_bp.route('/datasets/info_columns', methods=['GET'])
+def info_columns(ident):
+    dataset_dto = DataSetDTO(**request.json)
+    return jsonify(ds.info_columns(dataset_dto)), 200
