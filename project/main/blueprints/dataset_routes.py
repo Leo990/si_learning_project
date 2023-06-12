@@ -1,6 +1,6 @@
 from flask import jsonify, Blueprint, request
 from project.main.services import dataset_service as ds
-from project.main.dtos.dataset_dto import DataSetDTO
+from project.main.dtos.service_dtos import DataSetDTO
 
 dataset_bp = Blueprint('dataset', __name__)
 

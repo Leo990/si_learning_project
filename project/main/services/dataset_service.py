@@ -1,12 +1,10 @@
 from project.main.config.config import DBContext
-from project.main.enums.db_enum import DBEnum
-from project.main.enums.collection_enum import CollectionEnum
+from project.main.enums.db_enum import DBEnum, CollectionEnum
 from bson.objectid import ObjectId
 import json
 
-from project.main.dtos.dataset_dto import DataSetDTO
+from project.main.dtos.service_dtos import DataSetDTO, RecordDTO
 from project.main.utils.utils import type_of
-from project.main.dtos.record_dto import RecordDTO
 
 from project.main.services import record_service as rs
 
