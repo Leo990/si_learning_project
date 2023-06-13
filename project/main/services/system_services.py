@@ -37,7 +37,7 @@ def upload_files(file) -> dict:
     dataframe = pd.read_csv(file, delimiter=",")
     dataset_name = file.filename[:4]
     ddr.load_file(file, f"/{dataset_name}/{dataset_name}{ExtensionEnum.CSV}")
-    record = RecordDTO(my_data=dataframe.to_json(orient='records'))
+    record = RecordDTO(my_data=json.loads(dataframe.to_json(orient='records')))
     ident = rs.insert(record)
     dataset = DataSetDTO(f"{dataset_name}", record_id=ident)
     return ds.insert(dataset)
@@ -129,7 +129,7 @@ def preprocess_dataset(param_pre_process_dto: ParamPreprocessDTO):
     dataset_dto: DataSetDTO = ds.find(param_pre_process_dto.ident)
     record_dto: RecordDTO = rs.find(dataset_dto.record_id)
     if dataset_dto is not None and record_dto is not None and record_dto.is_preprocessed is False:
-        dataframe = pd.DataFrame.from_records(data=json.loads(record_dto.my_data))
+        dataframe = pd.DataFrame.from_records(data=record_dto.my_data)
 
         if param_pre_process_dto.preprocess_enum == PreprocessEnum.MEAN:
             preprocess_dataframe = _impute_mean(dataframe)
@@ -178,7 +178,7 @@ def _impute_hot_deck(dataset):
 
 
 def _build_preprocessed_dataset(preprocess_dataframe, dataset_dto, record_dto):
-    record_dto.my_data = preprocess_dataframe.to_json(orient='records')
+    record_dto.my_data = json.loads(preprocess_dataframe.to_json(orient='records'))
     record_dto.is_preprocessed = True
     rs.update(record_dto)
     csv_data = preprocess_dataframe.to_csv(index=False)

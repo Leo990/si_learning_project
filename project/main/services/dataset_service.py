@@ -17,7 +17,7 @@ def insert(dataset: DataSetDTO):
         record = rs.find(dataset.record_id)
         if record is None:
             raise Exception("No existe registro asociado para el dataset")
-        ident = collection.insert_one(dataset.serialize(False)).inserted_id
+        ident = collection.insert_one(dataset.__dict__).inserted_id
         return str(ident)
     else:
         raise Exception("El identificador del registro no se ingresó correctamente")
@@ -28,7 +28,7 @@ def index():
     for dataset in list(collection.find()):
         dataset_list.append(
             DataSetDTO(dataset['name'], dataset['record_id'], dataset['model_name'],
-                       dataset['accuracy'], str(dataset['_id'])).serialize(True))
+                       dataset['accuracy'], str(dataset['_id'])).__dict__)
     return dataset_list
 
 
@@ -37,32 +37,40 @@ def find(ident: str):
     found_dataset = collection.find_one({'_id': document_id})
     if found_dataset is not None:
         return DataSetDTO(found_dataset['name'], found_dataset['record_id'], found_dataset['model_name'],
-                          found_dataset['accuracy'], str(found_dataset['_id'])).serialize(True)
+                          found_dataset['accuracy'], str(found_dataset['_id']))
     raise Exception('No se encontró el dataset')
 
 
 def update(dataset_dto: DataSetDTO):
     document_id = ObjectId(dataset_dto.ident)  # ID del documento a consultar
-    collection.update_one(
-        {
-            '_id': document_id
-        },
-        {
-            '$set': {
-                'name': dataset_dto.name,
-                'record_id': dataset_dto.record_id,
-                'model_name': dataset_dto.model_name,
-                'accuracy': dataset_dto.accuracy}
-        }
-    )
-    return dataset_dto.serialize(True)
+    if dataset_dto.record_id is not None:
+        record = rs.find(dataset_dto.record_id)
+        if record is None:
+            raise Exception()
+        else:
+            collection.update_one(
+                {
+                    '_id': document_id
+                },
+                {
+                    '$set': {
+                        'ident': dataset_dto.ident,
+                        'name': dataset_dto.name,
+                        'record_id': dataset_dto.record_id,
+                        'model_name': dataset_dto.model_name,
+                        'accuracy': dataset_dto.accuracy}
+                }
+            )
+            return dataset_dto
 
 
 def remove(ident: str):
     document_id = ObjectId(ident)  # ID del documento a consultar
-    return collection.find_one_and_delete({'_id': document_id}) is not None
+    collection.find_one_and_delete({'_id': document_id})
+    return ident
 
 
+# pendiente
 def info_columns(dataset_dto: DataSetDTO):
     record: RecordDTO = rs.find(dataset_dto.record_id)
     data = json.loads(record.my_data)

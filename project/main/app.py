@@ -1,7 +1,6 @@
 from flask import Flask
 from project.main.blueprints.system_routes import system_bp
 from project.main.blueprints.dataset_routes import dataset_bp
-from project.main.blueprints.record_routes import record_bp
 
 app = Flask(__name__)
 

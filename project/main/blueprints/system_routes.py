@@ -22,5 +22,5 @@ def manage_dataset():
 
 @system_bp.route('/preprocess_dataset', methods=['POST'])
 def preprocess_dataset():
-    param_preprocess_dto: ParamPreprocessDTO = request.json
+    param_preprocess_dto = ParamPreprocessDTO(**request.json)
     return ss.preprocess_dataset(param_preprocess_dto), 200

@@ -11,6 +11,12 @@ def create_record():
     return jsonify(rs.insert(record_dto)), 200
 
 
+@record_bp.route('/records/update', methods=['POST'])
+def update_record():
+    record_dto = RecordDTO(**request.json)
+    return jsonify(rs.update(record_dto).__dict__), 200
+
+
 @record_bp.route('/records', methods=['GET'])
 def list_record():
     return jsonify(rs.index()), 200
@@ -18,9 +24,9 @@ def list_record():
 
 @record_bp.route('/records/find/<ident>', methods=['GET'])
 def find_record(ident):
-    return rs.find(ident), 200
+    return jsonify(rs.find(ident).__dict__), 200
 
 
 @record_bp.route('/records/remove/<ident>', methods=['POST'])
 def remove_record(ident):
-    return rs.remove(ident), 200
+    return jsonify(rs.remove(ident)), 200

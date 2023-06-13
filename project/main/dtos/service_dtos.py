@@ -4,15 +4,15 @@ class RecordDTO:
         self.is_preprocessed = is_preprocessed
         self.ident = ident
 
-    def serialize(self, have_id: bool):
+    def __getstate__(self):
         return {
-            "ident": self.ident,
-            "my_data": self.my_data,
-            "is_preprocessed": self.is_preprocessed
-        } if have_id else {
-            "my_data": self.my_data,
-            "is_preprocessed": self.is_preprocessed
+            'my_data': self.my_data,
+            'is_preprocessed': self.is_preprocessed
         }
+
+    def __setstate__(self, state):
+        self.my_data = state['my_data']
+        self.is_preprocessed = state['is_preprocessed']
 
 
 class ParamTrainDTO:
