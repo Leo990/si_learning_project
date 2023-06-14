@@ -111,4 +111,8 @@ dataset = datasets.load_breast_cancer()
 print(dataset.DESCR)
 knn_training(dataset, 3)
 
+print(dataset)
+print(data)
+
 linear_logisticRegression_training(dataset)
+

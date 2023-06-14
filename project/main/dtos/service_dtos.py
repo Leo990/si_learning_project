@@ -47,3 +47,7 @@ class DataSetDTO:
             "model_name": self.model_name,
             "accuracy": self.accuracy
         }
+
+
+
+#------------------MODELO DE LA BASE DE DATOS QUE SE VA A PROCESAR
