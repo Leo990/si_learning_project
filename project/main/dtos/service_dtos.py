@@ -49,5 +49,10 @@ class DataSetDTO:
         }
 
 
+class PredictDTO:
 
-#------------------MODELO DE LA BASE DE DATOS QUE SE VA A PROCESAR
+    def __init__(self, ident, array):
+        self.ident = ident
+        self.array = array
+
+

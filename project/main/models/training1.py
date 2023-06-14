@@ -17,6 +17,8 @@ from sklearn.metrics import mean_squared_error
 #Importación de la regresión logística
 #Normalización de los datos
 from sklearn.preprocessing import MinMaxScaler
+#Guardar modelos.
+import joblib
 
 
 def knn_training(dataset, neighborns):
@@ -37,7 +39,6 @@ def knn_training(dataset, neighborns):
 
     # Entrenar el clasificador KNN
     knn.fit(XTrain, yTrain)
-
     # Predecir las etiquetas para el conjunto de prueba
     yPredict = knn.predict(XTest)
     print("Las predicciones son ")
@@ -64,7 +65,6 @@ def linear_regression_training(dataset, columna, etiqueta):
 
     r2 = regresionLineal.score(X, y)
     print("R2 =", r2)
-
     prediccionEntrenamiento = regresionLineal.predict(X)
     mse = mean_squared_error(y_true=y, y_pred=prediccionEntrenamiento)
     print("MSE=", mse)
@@ -92,8 +92,9 @@ def linear_logisticRegression_training(dataset):
     # Implementación de la regresión logística
     modelo = LogisticRegression()
     modelo.fit(XTrain, yTrain)
-
     yPredicho = modelo.predict(XTest)
+    # Guardar el modelo
+    joblib.dump(modelo, './models.h5')
     print(yPredicho)
     print("vs")
     print(yTest)

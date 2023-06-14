@@ -3,6 +3,7 @@ from project.main.services import prediction_service as ps #Importacion del serv
 from project.main.dtos.service_dtos import RecordDTO #Talvez se use mas tarde
 from io import BytesIO
 from dropbox.exceptions import ApiError
+import joblib
 
 prediction_bp = Blueprint('prediction', __name__)
 
@@ -10,9 +11,27 @@ prediction_bp = Blueprint('prediction', __name__)
 #METODO QUE CREA UNA PREDICCION
 @prediction_bp.route('/prediction/predice', methods=['POST'])
 def create_prediction():
-    #Cambiar modelo
-    #record_dto = RecordDTO(**request.json)
-    return jsonify(ps.predice_model()), 200
+    # Obtener los datos del cuerpo de la solicitud POST
+    data = request.json
+
+    # Verificar si se proporciona la ruta del archivo del modelo
+    if 'ruta_modelo' not in data:
+        return jsonify({'error': 'No se proporcionó la ruta del archivo del modelo.'}), 400
+
+    # Verificar si se proporciona el arreglo de datos para predecir
+    if 'datos' not in data:
+        return jsonify({'error': 'No se proporcionó el arreglo de datos para predecir.'}), 400
+
+    # Cargar el modelo desde la ruta del archivo
+    ruta_modelo = data['ruta_modelo']
+    modelo = joblib.load(ruta_modelo)
+
+    # Realizar las predicciones con el modelo
+    arreglo_datos = data['datos']
+    predicciones = modelo.predict(arreglo_datos)
+
+    # Retornar las predicciones como respuesta
+    return jsonify({'predicciones': predicciones.tolist()}), 200
 
 """Se encarga de subir un archivo
 Para probar ver en el postman body-> form-data -> donde la llave es file y el valor es el archivo
