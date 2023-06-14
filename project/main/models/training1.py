@@ -11,10 +11,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 #Importación modelo regresión lineal
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 #Métricas para la regresión lineal
 from sklearn.metrics import mean_squared_error
 #Importación de la regresión logística
-from sklearn.linear_model import LogisticRegression
 #Normalización de los datos
 from sklearn.preprocessing import MinMaxScaler
 
