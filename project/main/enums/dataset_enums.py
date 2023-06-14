@@ -15,3 +15,9 @@ class EvaluatorEnum:
 class ScalerEnum:
     MIN_MAX_SCALER = "MIN_MAX_SCALER"
     STANDARD_SCALER = "STANDARD_SCALER"
+
+
+class PreprocessEnum:
+    HOT_DECK = 'HOT_DECK'
+    MEAN = 'MEAN'
+    MEDIAN = 'MEDIAN'

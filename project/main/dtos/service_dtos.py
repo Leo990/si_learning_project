@@ -4,26 +4,31 @@ class RecordDTO:
         self.is_preprocessed = is_preprocessed
         self.ident = ident
 
-    def serialize(self, have_id: bool):
+    def __getstate__(self):
         return {
-            "ident": self.ident,
-            "my_data": self.my_data,
-            "is_preprocessed": self.is_preprocessed
-        } if have_id else {
-            "my_data": self.my_data,
-            "is_preprocessed": self.is_preprocessed
+            'my_data': self.my_data,
+            'is_preprocessed': self.is_preprocessed
         }
+
+    def __setstate__(self, state):
+        self.my_data = state['my_data']
+        self.is_preprocessed = state['is_preprocessed']
 
 
 class ParamTrainDTO:
 
-    def __int__(self, ident, y_column, test_size, scaler_enum, model_enum, evaluator_enum):
+    def __init__(self, ident: str, y_column: str, scaler_enum: str, model_enum: str, evaluator: dict):
         self.ident = ident
         self.y_column = y_column
-        self.test_size = test_size
         self.scaler_enum = scaler_enum
         self.model_enum = model_enum
-        self.evaluator_enum = None
+        self.evaluator = evaluator
+
+
+class ParamPreprocessDTO:
+    def __init__(self, ident: str, preprocess_enum: str):
+        self.ident = ident
+        self.preprocess_enum = preprocess_enum
 
 
 class DataSetDTO:
@@ -47,3 +52,12 @@ class DataSetDTO:
             "model_name": self.model_name,
             "accuracy": self.accuracy
         }
+
+
+class PredictDTO:
+
+    def __init__(self, ident, array):
+        self.ident = ident
+        self.array = array
+
+
