@@ -3,6 +3,7 @@ import json
 import os
 import dropbox.files as fl
 from datetime import datetime
+import joblib
 from project.main.config.config import DropBoxContext
 
 from sklearn.model_selection import KFold, train_test_split
@@ -131,6 +132,16 @@ def _build_dataset(dataset_dto, model, param_train, accuracy):
         os.remove(temp_path)
     dataset_dto.model_name = param_train.model_enum
     dataset_dto.accuracy = accuracy
+
+
+def predecir(ruta_modelo, array):
+    # Cargar el modelo desde la ruta especificada
+    modelo = joblib.load(ruta_modelo)
+
+    # Realizar las predicciones
+    predicciones = modelo.predict(array)
+
+    return predicciones
 
 
 def preprocess_dataset(param_pre_process_dto: ParamPreprocessDTO):

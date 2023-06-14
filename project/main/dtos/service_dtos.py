@@ -52,3 +52,12 @@ class DataSetDTO:
             "model_name": self.model_name,
             "accuracy": self.accuracy
         }
+
+
+class PredictDTO:
+
+    def __init__(self, ident, array):
+        self.ident = ident
+        self.array = array
+
+
