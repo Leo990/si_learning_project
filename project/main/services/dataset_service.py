@@ -1,10 +1,9 @@
 from project.main.config.config import DBContext
 from project.main.enums.db_enum import DBEnum, CollectionEnum
 from bson.objectid import ObjectId
-import json
+import pandas as pd
 
 from project.main.dtos.service_dtos import DataSetDTO, RecordDTO
-from project.main.utils.utils import type_of
 
 from project.main.services import record_service as rs
 
@@ -72,10 +71,9 @@ def remove(ident: str):
 
 # pendiente
 def info_columns(dataset_dto: DataSetDTO):
-    record: RecordDTO = rs.find(dataset_dto.record_id)
-    data = json.loads(record.my_data)
-    item = data[0]
-    info_columns_dic = {}
-    for key in item.keys():
-        info_columns_dic[key] = type_of(item[key])
-    return info_columns_dic
+    record_dto: RecordDTO = rs.find(dataset_dto.record_id)
+    column_types = {}
+    if dataset_dto is not None and record_dto is not None and record_dto.is_preprocessed is False:
+        dataframe = pd.DataFrame.from_records(data=record_dto.my_data)
+        column_types = dataframe.dtypes.to_dict()
+    return column_types

@@ -17,13 +17,12 @@ class RecordDTO:
 
 class ParamTrainDTO:
 
-    def __int__(self, ident, y_column, test_size, scaler_enum, model_enum, evaluator_enum):
+    def __init__(self, ident: str, y_column: str, scaler_enum: str, model_enum: str, evaluator: dict):
         self.ident = ident
         self.y_column = y_column
-        self.test_size = test_size
         self.scaler_enum = scaler_enum
         self.model_enum = model_enum
-        self.evaluator_enum = None
+        self.evaluator = evaluator
 
 
 class ParamPreprocessDTO:
